@@ -111,10 +111,43 @@ export const getUserById = async (req, res) => {
 export const getUserResumes = async (req, res) => {
     try{
         const userId = req.userId;
+        const { search, sort, page = 1, limit = 9 } = req.query;
 
-        //return user resumes
-        const resumes = await Resume.find({userId});
-        return res.status(200).json({resumes});
+        const query = { userId };
+
+        // Search by title
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+
+        // Pagination
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+        const skip = (pageNumber - 1) * limitNumber;
+
+        // Sort
+        let sortOption = { updatedAt: -1 }; // Default: Newest first
+        if (sort === 'oldest') {
+            sortOption = { updatedAt: 1 };
+        } else if (sort === 'a-z') {
+            sortOption = { title: 1 };
+        } else if (sort === 'z-a') {
+            sortOption = { title: -1 };
+        }
+
+        const resumes = await Resume.find(query)
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limitNumber);
+
+        const totalResumes = await Resume.countDocuments(query);
+
+        return res.status(200).json({
+            resumes,
+            totalPages: Math.ceil(totalResumes / limitNumber),
+            currentPage: pageNumber,
+            totalResumes
+        });
 
     } catch (err){
         return res.status(400).json({message: err.message});

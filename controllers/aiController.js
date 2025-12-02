@@ -81,7 +81,7 @@ export const uploadResume = async (req, res) => {
 
         const systemPrompt = "You are an expert AI agent to extract data from resume. Extract all information from the resume text and return it as valid JSON only, with no additional text before or after."
         const userPrompt = `Extract data from the following resume text and return as JSON in this exact format:
-{
+        {
   "professionalSummary": "extracted summary text here or empty string",
   "skills": ["skill1", "skill2", "skill3"],
   "personal_info": {
@@ -95,7 +95,7 @@ export const uploadResume = async (req, res) => {
     "website": "extracted website url or empty string"
   },
   "experience": [
-    {
+            {
       "company": "company name",
       "position": "job title",
       "start_date": "start date",
@@ -105,14 +105,14 @@ export const uploadResume = async (req, res) => {
     }
   ],
   "projects": [
-    {
+            {
       "name": "project name",
       "type": "project type",
       "description": "project description"
     }
   ],
   "education": [
-    {
+            {
       "institution": "school name",
       "degree": "degree type",
       "field": "field of study",
